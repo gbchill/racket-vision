@@ -1,22 +1,44 @@
-from flask import Blueprint, request, jsonify
 import os
+import logging
+from flask import Blueprint, request, jsonify, send_from_directory
+from app.analysis.video_analysis import process_video_with_mediapipe
 
-bp = Blueprint('main', __name__)
+routes = Blueprint("routes", __name__)
 
-@bp.route('/analyze', methods=['POST'])
-def analyze():
-    file = request.files.get('file')  # Get the uploaded file
-    if not file:
-        return jsonify({'error': 'No file uploaded'}), 400
+# Path to the temporary and output folders
+TEMP_FOLDER = "temp"
+OUTPUT_FOLDER = "output"
 
-    # Define a directory to save the file temporarily
-    temp_dir = os.path.join(os.getcwd(), 'temp')
-    if not os.path.exists(temp_dir):
-        os.makedirs(temp_dir)  # Create the 'temp' directory if it doesn't exist
+# Setup logging
+logging.basicConfig(level=logging.INFO)
 
-    # Save the uploaded file
-    save_path = os.path.join(temp_dir, file.filename)
-    file.save(save_path)
+@routes.route("/analyze", methods=["POST"])
+def analyze_video():
+    if "file" not in request.files:
+        logging.error("No file uploaded")
+        return jsonify({"error": "No file uploaded"}), 400
 
-    # Respond with the saved file path (for debugging)
-    return jsonify({"message": f"Video saved to {save_path}"})
+    file = request.files["file"]
+
+    try:
+        # Save uploaded video to TEMP_FOLDER
+        os.makedirs(TEMP_FOLDER, exist_ok=True)
+        input_path = os.path.join(TEMP_FOLDER, file.filename)
+        file.save(input_path)
+        logging.info(f"Uploaded file saved to: {input_path}")
+
+        # Process video
+        os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+        output_path = process_video_with_mediapipe(input_path, OUTPUT_FOLDER)
+        logging.info(f"Processed video saved to: {output_path}")
+
+        if not os.path.exists(output_path):
+            logging.error("Processed video file not found")
+            return jsonify({"error": "Failed to process video"}), 500
+
+        # Return re-encoded video path
+        return jsonify({"output_path": f"/output/{os.path.basename(output_path)}"})
+
+    except Exception as e:
+        logging.error(f"Error processing video: {str(e)}")
+        return jsonify({"error": "An error occurred during processing"}), 500
