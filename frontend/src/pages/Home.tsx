@@ -4,14 +4,18 @@ import HeroSection from '../components/HeroSection';
 import FileUploader from '../components/FileUploader';
 import Footer from '../components/Footer';
 
-const Home = () => {
+interface HomeProps {
+  setProcessedVideoUrl: (url: string | null) => void;
+}
+
+const Home: React.FC<HomeProps> = ({ setProcessedVideoUrl }) => {
   return (
     <>
       <Header />
       <main className="">
         <HeroSection />
         <div className="py-10">
-          <FileUploader />
+          <FileUploader setProcessedVideoUrl={setProcessedVideoUrl} />
         </div>
       </main>
       <Footer />

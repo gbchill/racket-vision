@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { FiPlus } from "react-icons/fi";
 
-const FileUploader = () => {
+interface FileUploaderProps {
+  setProcessedVideoUrl: (url: string | null) => void;
+}
+
+const FileUploader: React.FC<FileUploaderProps> = ({ setProcessedVideoUrl }) => {
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [processedVideoUrl, setProcessedVideoUrl] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
-      setProcessedVideoUrl(null); // Reset processed video URL
     }
   };
 
@@ -30,17 +34,15 @@ const FileUploader = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      console.log("Backend response:", response.data); // Log the backend response
-
       if (response.data.output_path) {
         const videoUrl = `http://127.0.0.1:5000${response.data.output_path}`;
-        console.log("Processed video URL:", videoUrl); // Log the video URL
         setProcessedVideoUrl(videoUrl);
+        navigate("/upload");
       } else {
         alert("Failed to analyze the video.");
       }
     } catch (error) {
-      console.error("Error uploading video:", error); // Log any errors
+      console.error("Error uploading video:", error);
       alert("Failed to analyze the video.");
     } finally {
       setIsLoading(false);
@@ -50,7 +52,6 @@ const FileUploader = () => {
   return (
     <div className="w-full max-w-5xl mx-auto mt-10">
       <div className="border-4 border-dashed border-black shadow-lg bg-white p-8 rounded-2xl w-full h-[500px] flex flex-col items-center justify-center">
-        {/* File Input */}
         <input
           type="file"
           accept="video/*"
@@ -67,17 +68,8 @@ const FileUploader = () => {
           <span className="text-lg font-medium">Click to upload</span>
         </label>
 
-        {/* Display Uploaded File Name */}
-        {file && (
-          <p className="mt-4 text-gray-700">
-            Selected File: <span className="font-bold">{file.name}</span>
-          </p>
-        )}
+        {file && <p className="mt-4 text-gray-700">Selected File: {file.name}</p>}
 
-        {/* Loading Notification */}
-        {isLoading && <p className="mt-4 text-blue-500">Processing video... Please wait.</p>}
-
-        {/* Upload Button */}
         <button
           onClick={handleUpload}
           className="mt-6 bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600"
@@ -85,18 +77,6 @@ const FileUploader = () => {
         >
           {isLoading ? "Processing..." : "Analyze Video"}
         </button>
-
-        {/* Display Processed Video */}
-        {processedVideoUrl && (
-          <div className="mt-6">
-            <h3 className="text-lg font-bold mb-2">Processed Video:</h3>
-            <video
-              src={processedVideoUrl}
-              controls
-              className="w-full max-w-lg rounded-lg shadow-lg"
-            ></video>
-          </div>
-        )}
       </div>
     </div>
   );
