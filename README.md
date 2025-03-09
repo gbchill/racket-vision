@@ -66,11 +66,16 @@ cd racket-vision
 ### 2. Create and Activate a Virtual Environment
 
 ```bash
-python3 -m venv venv
+python3 -m venv venv #mac0s/Linux
+
 
 
 #Activate
 source venv/bin/activate  # macOS/Linux
+
+.\venv\Scripts\Activate.ps1 #Windows 
+
+
 ```
 
 (For Windows, use `venv\Scripts\activate` instead.)
