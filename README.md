@@ -1,6 +1,6 @@
-# Tennis Shot Analysis Project
+# RacketVision
 
-This project is an AI-powered tool designed to analyze tennis shots, particularly focusing on the forehand stroke. It utilizes computer vision techniques, including MediaPipe, to process video footage and extract key insights about player performance.
+ RacketVision is an AI-powered tennis coaching and analysis platform designed to help players improve their forehand shot. By leveraging advanced computer vision and pose estimation, the system extracts key body landmarks from user-uploaded videos and compares them to those from professionally executed forehands. This comparison produces actionable feedback, enabling players to understand and correct flaws in their technique.
 
 ## Features
 
@@ -51,12 +51,6 @@ exec zsh  # For macOS/Linux using Zsh
 brew install python@3.10
 ```
 
-Then update your `PATH`:
-
-```bash
-echo 'export PATH="/opt/homebrew/opt/python@3.10/bin:$PATH"' >> ~/.zshrc
-source ~/.zshrc
-```
 
 ---
 
@@ -66,7 +60,7 @@ source ~/.zshrc
 
 ```bash
 git clone <repo-url>
-cd tennis-shot-analysis
+cd racket-vision
 ```
 
 ### 2. Create and Activate a Virtual Environment
@@ -84,18 +78,15 @@ source venv/bin/activate  # macOS/Linux
 pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
 ```
-
-### 4. Install MediaPipe
-
-```bash
-pip install mediapipe --no-cache-dir
-```
-
-If the above fails, try:
+### 3.1. Generate or Update the requirements.txt File
+After installing or updating your project dependencies, generate an updated requirements.txt file with the following command:
 
 ```bash
-pip install git+https://github.com/google/mediapipe.git
+pip freeze > requirements.txt
 ```
+This command captures all installed packages and their versions, ensuring your dependency list remains current. Remember to commit any changes to this file.
+
+
 
 ### 5. Run the Backend Server
 
@@ -103,16 +94,10 @@ Navigate to the backend folder and start the server:
 
 ```bash
 cd backend
-flask run
+cd app
+fastapi dev main.py
 ```
 
-By default, the server runs on `http://127.0.0.1:5000/`.
-
-To run on a specific port:
-
-```bash
-flask run --host=0.0.0.0 --port=5001
-```
 
 ### 6. Run the Frontend
 
@@ -121,23 +106,7 @@ Navigate to the frontend folder and start the application:
 ```bash
 cd ../frontend
 npm install  # Install dependencies
-npm start  # Start the frontend development server
+npm run dev
 ```
 
-By default, the frontend runs on `http://localhost:3000/`.
-
----
-
-### Frontend Not Running
-
-If the frontend does not start, try:
-
-```bash
-cd frontend
-npm install  # Ensure all dependencies are installed
-npm start  # Start the frontend again
-```
-
----
-
-This README provides full instructions to set up and run the Tennis Shot Analysis project, covering backend processing, AI-powered forehand shot analysis, and frontend deployment.
+Visit http://localhost:3000 to view your application.
