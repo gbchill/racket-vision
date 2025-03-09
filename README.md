@@ -67,6 +67,9 @@ cd racket-vision
 
 ```bash
 python3 -m venv venv
+
+
+#Activate
 source venv/bin/activate  # macOS/Linux
 ```
 
