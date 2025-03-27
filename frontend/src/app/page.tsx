@@ -39,10 +39,21 @@ export default function Home() {
 
   return (
     <div className="bg-black text-white min-h-screen">
-      <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col lg:flex-row items-center">
+      <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col lg:flex-row items-start">
         {/* Left side - Text content */}
         <div className="w-full lg:w-1/2 mb-12 lg:mb-0 lg:pr-12">
-          <h1 className="text-5xl lg:text-6xl font-bold mb-6">
+          {/* Added home image above the text */}
+          <div className="">
+            <Image
+              src="/images/home_image.jpg"
+              alt="Tennis player in action"
+              width={1000}
+              height={800}
+              className="rounded-xl w-full h-auto object-cover"
+              priority
+            />
+          </div>
+          <h1 className="text-5xl lg:text-7xl font-bold mb-6 mt-6">
             Analyze Tennis <span className="text-green-500">Shots</span>
           </h1>
           <div className="flex mb-8">
@@ -50,13 +61,10 @@ export default function Home() {
               100% Automatically and <span className="bg-green-500 text-black px-3 py-1 rounded-md ml-1">Free</span>
             </h2>
           </div>
-          <p className="text-lg text-gray-300 mb-8">
-            Advanced AI technology instantly analyzes your tennis technique and provides actionable feedback to elevate your game.
-          </p>
         </div>
 
         {/* Right side - Upload area and Sample Videos */}
-        <div className="w-full lg:w-1/2 space-y-6">
+        <div className="w-full lg:w-1/2 space-y-6 mt-16 lg:mt-35">
           <div 
             className="bg-gray-900 p-15 rounded-3xl transition-colors w-full max-w-xl mx-auto h-110 shadow-[0_2px_8px_rgba(255,255,255,0.15)]"
             onDragOver={handleDragOver}

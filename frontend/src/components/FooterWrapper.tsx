@@ -1,16 +1,25 @@
 'use client';
 
-import React from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
-const Footer: React.FC = () => {
+export default function FooterWrapper() {
+  const pathname = usePathname();
+  const hideFooterPaths = ['/upload'];
+  
+  // Don't render footer on specified paths
+  if (hideFooterPaths.includes(pathname)) {
+    return null;
+  }
+
+  // Return the footer component content directly
   return (
     <footer className="bg-black text-gray-400 py-8 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between">
           <div className="mb-6 md:mb-0">
-            <h3 className="text-white text-lg font-semibold mb-2">Racket<span className="text-green-500">Vision</span></h3>
-            <p className="text-sm">AI-powered tennis shot analysis</p>
+            <h3 className="text-white text-lg font-semibold mb-2">RacketVision</h3>
+            <p className="text-sm">AI-powered tennis coaching platform</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div>
@@ -52,6 +61,4 @@ const Footer: React.FC = () => {
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}
