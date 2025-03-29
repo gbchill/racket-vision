@@ -1,13 +1,16 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState, useRef } from 'react';
 import { FiUpload } from 'react-icons/fi';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   function handleFileSelect(e: ChangeEvent<HTMLInputElement>): void {
     const file = e.target.files?.[0];
@@ -37,6 +40,11 @@ export default function Home() {
     }
   }
 
+  function handleUploadClick() {
+    // Navigate to upload page with query parameter to trigger file dialog
+    router.push('/upload?autoOpen=true');
+  }
+
   return (
     <div className="bg-black text-white min-h-screen">
       <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col lg:flex-row items-start">
@@ -49,11 +57,11 @@ export default function Home() {
               alt="Tennis player in action"
               width={1000}
               height={800}
-              className="rounded-xl w-full h-auto object-cover"
+              className="rounded-2xl w-full h-auto object-cover"
               priority
             />
           </div>
-          <h1 className="text-5xl lg:text-7xl font-bold mb-6 mt-6">
+          <h1 className="text-5xl lg:text-7xl font-bold mb-6 mt-10">
             Analyze Tennis <span className="text-green-500">Shots</span>
           </h1>
           <div className="flex mb-8">
@@ -64,20 +72,20 @@ export default function Home() {
         </div>
 
         {/* Right side - Upload area and Sample Videos */}
-        <div className="w-full lg:w-1/2 space-y-6 mt-16 lg:mt-35">
+        <div className="w-full lg:w-1/2 space-y-6 mt-16 lg:mt-35 ml-10">
           <div 
-            className="bg-gray-900 p-15 rounded-3xl transition-colors w-full max-w-xl mx-auto h-110 shadow-[0_2px_8px_rgba(255,255,255,0.15)]"
+            className="bg-gray-900 p-15 rounded-3xl transition-colors w-full max-w-xl mx-auto h-105 shadow-[0_2px_8px_rgba(255,255,255,0.15)]"
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
           >
             <div className="flex flex-col items-center justify-center h-full text-center pt-25">
-                <label
-                htmlFor="file-upload"
+              <button
+                onClick={handleUploadClick}
                 className="cursor-pointer bg-green-600 text-white text-3xl font-semibold py-4 px-10 rounded-full mb-8 hover:bg-green-500 transition-colors"
-                >
+              >
                 Upload Video
-                </label>
+              </button>
               
               <p className="text-white text-2xl mb-1 font-semibold">
                 or drop a file,
@@ -92,6 +100,7 @@ export default function Home() {
                 accept="video/*"
                 onChange={handleFileSelect}
                 className="hidden"
+                ref={fileInputRef}
               />
               
               {selectedFile && (
@@ -131,7 +140,7 @@ export default function Home() {
                       alt="Sample tennis shot" 
                       width={100} 
                       height={100} 
-                      className="rounded-2xl object-cover w-20 h-20"
+                      className="rounded-xl object-cover w-20 h-20"
                     />
                   </div>
                   <div className="cursor-pointer hover:opacity-80 transition-opacity">
@@ -140,7 +149,7 @@ export default function Home() {
                       alt="Sample tennis shot" 
                       width={100} 
                       height={100} 
-                      className="rounded-2xl object-cover w-20 h-20"
+                      className="rounded-xl object-cover w-20 h-20"
                     />
                   </div>
                   <div className="cursor-pointer hover:opacity-80 transition-opacity">
@@ -149,7 +158,7 @@ export default function Home() {
                       alt="Sample tennis shot" 
                       width={100} 
                       height={100} 
-                      className="rounded-2xl object-cover w-20 h-20"
+                      className="rounded-xl object-cover w-20 h-20"
                     />
                   </div>
                   <div className="cursor-pointer hover:opacity-80 transition-opacity">
@@ -158,7 +167,7 @@ export default function Home() {
                       alt="Sample tennis shot" 
                       width={100} 
                       height={100} 
-                      className="rounded-2xl object-cover w-20 h-20"
+                      className="rounded-xl object-cover w-20 h-20"
                     />
                   </div>
                 </div>

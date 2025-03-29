@@ -1,14 +1,39 @@
 'use client';
 
-import React, { useRef, useState, ChangeEvent } from 'react';
+import React, { useRef, useState, ChangeEvent, useEffect } from 'react';
 import { FiUpload } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 const UploadComponent = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const didOpenRef = useRef(false);
+
+  // Handle auto-open once, then clear the URL parameter
+  useEffect(() => {
+    const autoOpen = searchParams.get('autoOpen');
+    
+    // Only run this once per component mount
+    if (autoOpen === 'true' && !didOpenRef.current && fileInputRef.current) {
+      // Set the ref immediately to prevent multiple opens
+      didOpenRef.current = true;
+      
+      // Small delay to ensure component is fully mounted
+      setTimeout(() => {
+        fileInputRef.current?.click();
+        
+        // Replace URL without the query parameter to prevent reopening on refresh
+        const url = new URL(window.location.href);
+        url.searchParams.delete('autoOpen');
+        window.history.replaceState({}, '', url.toString());
+      }, 100);
+    }
+  }, [searchParams]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -44,9 +69,9 @@ const UploadComponent = () => {
 
   return (
     <div className="bg-black text-white min-h-screen">
-      <div className="w-full max-w-xl mx-auto px-6 py-16">
+      <div className="w-full max-w-xl mx-auto px-6 py-12">
         {/* Upload area */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           <div 
             className={`p-15 rounded-3xl transition-colors w-full mx-auto min-h-[400px] ${isDragging ? 'border-2 border-green-500' : ''}`}
             onDragOver={handleDragOver}
@@ -77,7 +102,7 @@ const UploadComponent = () => {
               
               {/* Upload button */}
               <button 
-                className="cursor-pointer bg-green-600 text-white text-3xl font-semibold py-4 px-10 rounded-full mb-8 hover:bg-green-500 transition-colors"
+                className="cursor-pointer bg-green-600 text-white text-3xl font-semibold py-4 px-10 rounded-full mb-6 hover:bg-green-500 transition-colors"
                 onClick={handleUploadClick}
               >
                 Upload Video
@@ -98,13 +123,13 @@ const UploadComponent = () => {
               </p>
               
               {/* URL option */}
-              <p className="text-white mb-10">
+              <p className="text-white mb-6">
                 paste video or <span className="text-green-400 underline cursor-pointer">URL</span>
               </p>
               
               {/* Display selected file */}
               {selectedFile && (
-                <div className="mt-8 p-3 bg-gray-800 rounded-lg w-full">
+                <div className="mt-4 p-3 bg-gray-800 rounded-lg w-full">
                   <div className="flex items-center">
                     <div className="bg-green-500 p-2 rounded mr-3">
                       <FiUpload className="text-black" />
@@ -121,12 +146,12 @@ const UploadComponent = () => {
             </div>
           </div>
 
-          {/* Sample videos section */}
-          <div className="max-w-xl mx-aut">
-            <p className="text-gray-300 text-lg font-semibold text-center mb-4">
+          {/* Sample videos section - moved up with less spacing */}
+          <div className="max-w-sm mx-auto mt-1">
+            <p className="text-gray-300 text-lg font-semibold text-center mb-2">
               No videos? Try one of these:
             </p>
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-4 gap-2">
               <div className="cursor-pointer hover:opacity-80 transition-opacity">
                 <Image 
                   src="/images/test_pic1.png" 
@@ -164,9 +189,9 @@ const UploadComponent = () => {
                 />
               </div>
             </div>
-            
-            {/* Terms of service */}
-            <div className="mt-8 text-xs text-gray-500">
+          
+            {/* Terms of service - properly positioned with reduced spacing */}
+            <div className="mt-4 text-xs text-gray-500 text-center">
               By uploading a video or URL you agree to our{' '}
               <Link href="/terms" className="text-green-400 underline">Terms of Service</Link>.
               To learn more about how RacketVision handles your personal data, check our{' '}

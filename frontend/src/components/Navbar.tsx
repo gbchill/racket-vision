@@ -14,7 +14,7 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="bg-black text-white shadow-md sticky top-0 z-50 border-b border-gray-800">
-      <div className="max-w-7xl mx-auto px-0">
+      <div className="max-w-full mx-0 px-8">
         <div className="flex items-center h-22">
           {/* Left side with Logo and navigation */}
           <div className="flex items-center">
