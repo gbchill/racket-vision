@@ -1,101 +1,187 @@
-import Image from "next/image";
+'use client';
+
+import { ChangeEvent, useState, useRef } from 'react';
+import { FiUpload } from 'react-icons/fi';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+  function handleFileSelect(e: ChangeEvent<HTMLInputElement>): void {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      console.log("Selected file:", file);
+    }
+  }
+
+  function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setIsDragging(true);
+  }
+
+  function handleDragLeave(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setIsDragging(false);
+  }
+
+  function handleDrop(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setSelectedFile(e.dataTransfer.files[0]);
+      console.log("Dropped file:", e.dataTransfer.files[0]);
+    }
+  }
+
+  function handleUploadClick() {
+    // Navigate to upload page with query parameter to trigger file dialog
+    router.push('/upload?autoOpen=true');
+  }
+
+  return (
+    <div className="bg-black text-white min-h-screen">
+      <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col lg:flex-row items-start">
+        {/* Left side - Text content */}
+        <div className="w-full lg:w-1/2 mb-12 lg:mb-0 lg:pr-12">
+          {/* Added home image above the text */}
+          <div className="">
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src="/images/home_image.jpg"
+              alt="Tennis player in action"
+              width={1000}
+              height={800}
+              className="rounded-2xl w-full h-auto object-cover"
+              priority
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
+          <h1 className="text-5xl lg:text-7xl font-bold mb-6 mt-10">
+            Analyze Tennis <span className="text-green-500">Shots</span>
+          </h1>
+          <div className="flex mb-8">
+            <h2 className="text-2xl font-bold">
+              100% Automatically and <span className="bg-green-500 text-black px-3 py-1 rounded-md ml-1">Free</span>
+            </h2>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Right side - Upload area and Sample Videos */}
+        <div className="w-full lg:w-1/2 space-y-6 mt-16 lg:mt-35 ml-10">
+          <div 
+            className="bg-gray-900 p-15 rounded-3xl transition-colors w-full max-w-xl mx-auto h-105 shadow-[0_2px_8px_rgba(255,255,255,0.15)]"
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          >
+            <div className="flex flex-col items-center justify-center h-full text-center pt-25">
+              <button
+                onClick={handleUploadClick}
+                className="cursor-pointer bg-green-600 text-white text-3xl font-semibold py-4 px-10 rounded-full mb-8 hover:bg-green-500 transition-colors"
+              >
+                Upload Video
+              </button>
+              
+              <p className="text-white text-2xl mb-1 font-semibold">
+                or drop a file,
+              </p>
+              <p className="text-white">
+                paste image or <span className="text-green-400 underline">URL</span>
+              </p>
+              
+              <input
+                id="file-upload"
+                type="file"
+                accept="video/*"
+                onChange={handleFileSelect}
+                className="hidden"
+                ref={fileInputRef}
+              />
+              
+              {selectedFile && (
+                <div className="mt-8 p-3 bg-gray-800 rounded-lg w-full">
+                  <div className="flex items-center">
+                    <div className="bg-green-500 p-2 rounded mr-3">
+                      <FiUpload className="text-black" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-sm font-semibold truncate">{selectedFile.name}</p>
+                      <p className="text-xs text-gray-400">
+                        {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Sample videos section moved below the upload area */}
+          <div className="max-w-xl mx-auto mt-10">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="md:w-1/4 text-center">
+                <p className="text-gray-300 text-lg font-semibold pr-13">
+                  No video?
+                </p>
+                <p className="text-gray-300 text-lg font-semibold whitespace-nowrap" >
+                Try one of these:
+                </p>
+              </div>
+              <div className="md:w-3/4">
+                <div className="grid grid-cols-4 gap-4">
+                  <div className="cursor-pointer hover:opacity-80 transition-opacity">
+                    <Image 
+                      src="/images/test_pic1.png" 
+                      alt="Sample tennis shot" 
+                      width={100} 
+                      height={100} 
+                      className="rounded-xl object-cover w-20 h-20"
+                    />
+                  </div>
+                  <div className="cursor-pointer hover:opacity-80 transition-opacity">
+                    <Image 
+                      src="/images/test_pic2.png" 
+                      alt="Sample tennis shot" 
+                      width={100} 
+                      height={100} 
+                      className="rounded-xl object-cover w-20 h-20"
+                    />
+                  </div>
+                  <div className="cursor-pointer hover:opacity-80 transition-opacity">
+                    <Image 
+                      src="/images/test_pic3.png" 
+                      alt="Sample tennis shot" 
+                      width={100} 
+                      height={100} 
+                      className="rounded-xl object-cover w-20 h-20"
+                    />
+                  </div>
+                  <div className="cursor-pointer hover:opacity-80 transition-opacity">
+                    <Image 
+                      src="/images/test_pic4.png" 
+                      alt="Sample tennis shot" 
+                      width={100} 
+                      height={100} 
+                      className="rounded-xl object-cover w-20 h-20"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-8 text-xs text-gray-500 ">
+              By uploading a video or URL you agree to our{' '}
+              <Link href="/terms" className="text-green-400 underline">Terms of Service</Link>.
+              To learn more about how RacketVision handles your personal data, check our{' '}
+              <Link href="/privacy" className="text-green-400 underline">Privacy Policy</Link>.
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
