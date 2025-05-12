@@ -1,6 +1,6 @@
 # RacketVision
 
- RacketVision is an AI-powered tennis coaching and analysis platform designed to help players improve their forehand shot. By leveraging advanced computer vision and pose estimation, the system extracts key body landmarks from user-uploaded videos and compares them to those from professionally executed forehands. This comparison produces actionable feedback, enabling players to understand and correct flaws in their technique.
+RacketVision is an AI-powered tennis coaching and analysis platform designed to help players improve their forehand shot. By leveraging advanced computer vision and pose estimation, the system extracts key body landmarks from user-uploaded videos and compares them to those from professionally executed forehands. This comparison produces actionable feedback, enabling players to understand and correct flaws in their technique.
 
 ## Features
 
@@ -51,7 +51,6 @@ exec zsh  # For macOS/Linux using Zsh
 brew install python@3.10
 ```
 
-
 ---
 
 ## Setup Instructions
@@ -66,8 +65,16 @@ cd racket-vision
 ### 2. Create and Activate a Virtual Environment
 
 ```bash
-python3 -m venv venv
+python3 -m venv venv #mac0s/Linux
+
+
+
+#Activate
 source venv/bin/activate  # macOS/Linux
+
+.\venv\Scripts\Activate.ps1 #Windows
+
+
 ```
 
 (For Windows, use `venv\Scripts\activate` instead.)
@@ -78,15 +85,16 @@ source venv/bin/activate  # macOS/Linux
 pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
 ```
+
 ### 3.1. Generate or Update the requirements.txt File
+
 After installing or updating your project dependencies, generate an updated requirements.txt file with the following command:
 
 ```bash
 pip freeze > requirements.txt
 ```
+
 This command captures all installed packages and their versions, ensuring your dependency list remains current. Remember to commit any changes to this file.
-
-
 
 ### 5. Run the Backend Server
 
@@ -97,7 +105,6 @@ cd backend
 cd app
 fastapi dev main.py
 ```
-
 
 ### 6. Run the Frontend
 
@@ -110,3 +117,6 @@ npm run dev
 ```
 
 Visit http://localhost:3000 to view your application.
+
+Random stuff:
+rafce

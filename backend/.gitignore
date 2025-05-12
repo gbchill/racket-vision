@@ -1,3 +1,73 @@
-venv/
+# Byte-compiled files and caches
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+*.venv/
+
+lib/
+libs/
+
+env/
+venv/
+ENV/
+env/
+
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.pytest_cache/
+
+# Type checkers and linters
+.mypy_cache/
+.dmypy.json
+.pyre/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*~
+
+# Flask-specific (if applicable)
+instance/
+.webassets-cache
+
+# Logs and environment files
+*.log
+.env
