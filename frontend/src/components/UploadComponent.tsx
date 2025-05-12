@@ -4,17 +4,19 @@ import React, { useRef, useState, ChangeEvent, useEffect } from 'react';
 import { FiUpload } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image';
+import axios from 'axios';
 import { useSearchParams, useRouter } from 'next/navigation';
 
 const UploadComponent = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
   const didOpenRef = useRef(false);
 
-  // Handle auto-open once, then clear the URL parameter
+  //handle auto-open once, then clear the URL parameter
   useEffect(() => {
     const autoOpen = searchParams.get('autoOpen');
     
@@ -60,6 +62,36 @@ const UploadComponent = () => {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       setSelectedFile(e.dataTransfer.files[0]);
       console.log("Dropped file:", e.dataTransfer.files[0]);
+    }
+  };
+  
+  //create the handleuploadsubmit function
+  const handleUploadSubmit = async () => {
+    if (!selectedFile) {
+      alert('Please select a video file first!');
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      const response = await axios.post("http://localhost:8000/analyze", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (response.data && response.data.output_path){
+        router.push(`/analysis?videoUrl=http://localhost:8000${response.data.output_path}`);
+      } else {
+        alert("Error processing video. Please try again.");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Error uploading video.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -141,6 +173,22 @@ const UploadComponent = () => {
                       </p>
                     </div>
                   </div>
+                  
+                  {/* Analyze button */}
+                  <button
+                    onClick={handleUploadSubmit}
+                    disabled={!selectedFile}
+                    className="mt-4 bg-green-600 text-white text-lg font-semibold py-2 px-4 rounded-full hover:bg-green-500 transition-colors disabled:opacity-50"
+                  >
+                    {isUploading ? (
+                      <>
+                        <span className="mr-2">Processing...</span>
+                        <span className="inline-block animate-spin h-4 w-4 border-2 border-white rounded-full border-t-transparent"></span>
+                      </>
+                    ) : (
+                      "Analyze Video"
+                    )}
+                  </button>
                 </div>
               )}
             </div>
