@@ -41,16 +41,16 @@ export default function Home() {
   }
 
   function handleUploadClick() {
-    // Navigate to upload page with query parameter to trigger file dialog
+    //navigate to upload page with query parameter to trigger file dialog
     router.push('/upload?autoOpen=true');
   }
 
   return (
     <div className="bg-black text-white min-h-screen">
       <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col lg:flex-row items-start">
-        {/* Left side - Text content */}
+        {/*left side */}
         <div className="w-full lg:w-1/2 mb-12 lg:mb-0 lg:pr-12">
-          {/* Added home image above the text */}
+          {/*added home image above the text */}
           <div className="">
             <Image
               src="/images/home_image.jpg"
@@ -121,7 +121,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Sample videos section moved below the upload area */}
+          {/*sample videos section moved below the upload area */}
           <div className="max-w-xl mx-auto mt-10">
             <div className="flex flex-col md:flex-row items-center gap-6">
               <div className="md:w-1/4 text-center">

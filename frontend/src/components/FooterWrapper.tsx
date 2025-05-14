@@ -6,13 +6,12 @@ import Link from 'next/link';
 export default function FooterWrapper() {
   const pathname = usePathname();
   const hideFooterPaths = ['/upload'];
-  
-  // Don't render footer on specified paths
+
   if (hideFooterPaths.includes(pathname)) {
     return null;
   }
 
-  // Return the footer component content directly
+
   return (
     <footer className="bg-black text-gray-400 py-8 px-6">
       <div className="max-w-7xl mx-auto">
