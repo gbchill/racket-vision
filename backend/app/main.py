@@ -9,28 +9,28 @@ import tempfile
 from .mediapipe_processor import process_video
 from .video import save_upload_file, upload_to_supabase, cleanup_temp_files
 
-# Set up logging
+#set up logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
-# Define the temporary directory for storing videos
+#define the temporary directory for storing videos
 TEMP_DIR = tempfile.gettempdir()
 
 app = FastAPI()
 
-# Add CORS middleware to allow requests from the frontend
+#add CORS middleware to allow requests from the frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Update with your frontend URL
+    allow_origins=["http://localhost:3000"],  #update with your frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Route for serving video files
+#route for serving video files
 @app.get("/api/video/{filename}")
 async def get_video(filename: str):
     """Serve video files from the temporary directory"""
@@ -64,7 +64,7 @@ async def analyze_video(file: UploadFile = File(...)):
     """
     logger.info(f"Received upload request for file: {file.filename}")
     
-    # Validate file type
+    #validate file type
     if not file.filename.lower().endswith(('.mp4', '.mov', '.avi', '.webm')):
         logger.warning(f"Invalid file type: {file.filename}")
         raise HTTPException(status_code=400, detail="Invalid file type. Please upload a video file.")
@@ -76,13 +76,13 @@ async def analyze_video(file: UploadFile = File(...)):
     temp_path = None
     
     try:
-        # Save the uploaded file
+        #save the uploaded file
         logger.info("Saving uploaded file")
         temp_path = await save_upload_file(file)
         temp_files.append(temp_path)
         logger.info(f"Saved uploaded file to: {temp_path}")
         
-        # Process the video with MediaPipe
+        #process the video with MediaPipe
         logger.info("Processing video with MediaPipe")
         try:
             processed_path = process_video(temp_path)
@@ -93,25 +93,25 @@ async def analyze_video(file: UploadFile = File(...)):
             logger.error(traceback.format_exc())
             raise HTTPException(status_code=500, detail=f"Error processing video: {str(e)}")
         
-        # Upload both videos to Supabase
+        #upload both videos to Supabase
         logger.info("Uploading videos to Supabase")
         try:
-            # Check if environment variables are set
+            #check if environment variables are set
             if not os.environ.get("SUPABASE_URL") or not os.environ.get("SUPABASE_KEY"):
                 logger.error("Supabase environment variables not set")
                 logger.info("Using local file paths for testing")
                 
-                # Use local paths for testing
+                #use local paths for testing
                 original_url = f"http://localhost:8000/api/video/{os.path.basename(temp_path)}"
                 processed_url = f"http://localhost:8000/api/video/{os.path.basename(processed_path)}"
             else:
-                # Try uploading to Supabase
+                #try uploading to supabase
                 try:
                     original_url = upload_to_supabase(temp_path, "original")
                     logger.info(f"Original URL: {original_url}")
                 except Exception as e:
                     logger.error(f"Error uploading original video: {str(e)}")
-                    # Fallback to local URL
+                    #fallback to local URL
                     original_url = f"http://localhost:8000/api/video/{os.path.basename(temp_path)}"
                     
                 try:
@@ -119,21 +119,21 @@ async def analyze_video(file: UploadFile = File(...)):
                     logger.info(f"Processed URL: {processed_url}")
                 except Exception as e:
                     logger.error(f"Error uploading processed video: {str(e)}")
-                    # Fallback to local URL
+                    #fallback to local URL
                     processed_url = f"http://localhost:8000/api/video/{os.path.basename(processed_path)}"
                 
         except Exception as e:
             logger.error(f"Error with Supabase upload: {str(e)}")
             logger.error(traceback.format_exc())
             
-            # Use local file paths
+            #use local file paths
             if processed_path and temp_path:
                 processed_url = f"http://localhost:8000/api/video/{os.path.basename(processed_path)}"
                 original_url = f"http://localhost:8000/api/video/{os.path.basename(temp_path)}"
             else:
                 raise HTTPException(status_code=500, detail=f"Error uploading videos: {str(e)}")
         
-        # Return the URLs
+        #return the URLs
         return JSONResponse({
             "original_url": original_url,
             "processed_url": processed_url,
@@ -141,20 +141,20 @@ async def analyze_video(file: UploadFile = File(...)):
         })
     
     except HTTPException as e:
-        # Re-raise HTTP exceptions
+        #re-raise HTTP exceptions
         raise
     
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         logger.error(traceback.format_exc())
         
-        # Try to return something useful for debugging
+        #try to return something useful for debugging
         response = {
             "detail": f"Error processing video: {str(e)}",
             "message": "Failed to process video"
         }
         
-        # If we got to the point of having processed videos, include their paths
+        #if we got to the point of having processed videos, include their paths
         if processed_path and temp_path:
             response["processed_url"] = f"http://localhost:8000/api/video/{os.path.basename(processed_path)}"
             response["original_url"] = f"http://localhost:8000/api/video/{os.path.basename(temp_path)}"
