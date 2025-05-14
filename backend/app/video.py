@@ -7,7 +7,7 @@ from fastapi import UploadFile
 
 from .supabase_client import supabase, VIDEOS_BUCKET
 
-# Set up logging
+#set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -17,10 +17,10 @@ async def save_upload_file(upload_file: UploadFile) -> str:
     Returns the path to the saved file
     """
     try:
-        # Create a temporary file
+        #create a temporary file
         suffix = Path(upload_file.filename).suffix
         with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as temp_file:
-            # Write the uploaded file to the temporary file
+            #write the uploaded file to the temporary file
             content = await upload_file.read()
             temp_file.write(content)
             logger.info(f"Saved uploaded file to temporary location: {temp_file.name}")
@@ -35,11 +35,11 @@ def upload_to_supabase(file_path: str, file_type: str) -> str:
     Returns the public URL of the uploaded file
     """
     try:
-        # Generate a unique filename
+        #generate a unique filename
         filename = f"{uuid.uuid4()}{Path(file_path).suffix}"
         logger.info(f"Uploading {file_type} file to Supabase: {filename}")
         
-        # Try to create the bucket - if it fails, it probably already exists
+        #try to create the bucket if it fails, it probably already exists
         try:
             logger.info(f"Creating bucket (if it doesn't exist): {VIDEOS_BUCKET}")
             supabase.storage.create_bucket(VIDEOS_BUCKET, {'public': True})
@@ -48,7 +48,7 @@ def upload_to_supabase(file_path: str, file_type: str) -> str:
             logger.info(f"Note: {e}")
             logger.info(f"If the bucket already exists, this is expected and not an error")
         
-        # Upload the file
+        #upload the file
         file_size = os.path.getsize(file_path)
         logger.info(f"File size: {file_size} bytes")
         
@@ -56,11 +56,11 @@ def upload_to_supabase(file_path: str, file_type: str) -> str:
         with open(file_path, 'rb') as f:
             file_content = f.read()
         
-        # Determine the content type
+        #determine the content type
         content_type = f"video/{Path(file_path).suffix.lstrip('.')}"
         logger.info(f"Content type: {content_type}")
             
-        # Upload using the correct API
+        #upload using the correct API
         path = f"{file_type}/{filename}"
         logger.info(f"Uploading to path: {path}")
         
