@@ -17,7 +17,7 @@ const UploadComponent = () => {
   const router = useRouter();
   const didOpenRef = useRef(false);
   
-  // Sample videos data
+  //sample videos data
   const sampleVideos = [
     { id: 1, image: '/images/test_pic1.png', videoId: 'sample1' },
     { id: 2, image: '/images/test_pic2.png', videoId: 'sample2' },
@@ -25,20 +25,20 @@ const UploadComponent = () => {
     { id: 4, image: '/images/test_pic4.png', videoId: 'sample4' },
   ];
 
-  // Handle auto-open once, then clear the URL parameter
+  //handle auto-open once, then clear the URL parameter
   useEffect(() => {
     const autoOpen = searchParams.get('autoOpen');
     
-    // Only run this once per component mount
+    //only run this once per component mount
     if (autoOpen === 'true' && !didOpenRef.current && fileInputRef.current) {
-      // Set the ref immediately to prevent multiple opens
+      //set the ref immediately to prevent multiple opens
       didOpenRef.current = true;
       
-      // Small delay to ensure component is fully mounted
+      //small delay to ensure component is fully mounted
       setTimeout(() => {
         fileInputRef.current?.click();
         
-        // Replace URL without the query parameter to prevent reopening on refresh
+        //replace URL without the query parameter to prevent reopening on refresh
         const url = new URL(window.location.href);
         url.searchParams.delete('autoOpen');
         window.history.replaceState({}, '', url.toString());
@@ -122,7 +122,7 @@ const UploadComponent = () => {
   };
 
   const handleSampleVideoClick = (videoId: string) => {
-    // In a real app, this would redirect to a pre-processed analysis
+    //in a real app this would redirect to a pre-processed analysis
     router.push(`/analysis?sampleVideo=${videoId}`);
   };
 
@@ -158,12 +158,12 @@ const UploadComponent = () => {
                 </svg>
               </div>
               
-              {/* Heading */}
+              {/*heading */}
               <h1 className="text-4xl font-bold text-white mb-8">
                 Upload a video to<br />analyze your tennis shots
               </h1>
               
-              {/* Upload button */}
+              {/*upload button */}
               <button 
                 className="cursor-pointer bg-green-600 text-white text-3xl font-semibold py-4 px-10 rounded-full mb-6 hover:bg-green-500 transition-colors"
                 onClick={handleUploadClick}

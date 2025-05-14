@@ -16,9 +16,9 @@ const Navbar: React.FC = () => {
     <nav className="bg-black text-white shadow-md sticky top-0 z-50 border-b border-gray-800">
       <div className="max-w-full mx-0 px-8">
         <div className="flex items-center h-22">
-          {/* Left side with Logo and navigation */}
+          {/*left side with Logo and navigation */}
           <div className="flex items-center">
-            {/* Logo and app name */}
+            {/*logo and app name */}
             <div className="flex-shrink-0 flex items-center">
               <Link href="/" className="flex items-center">
                 <Image
@@ -32,7 +32,7 @@ const Navbar: React.FC = () => {
               </Link>
             </div>
 
-            {/* Desktop menu - larger text */}
+            {/*desktop menu larger text */}
             <div className="hidden md:flex md:items-center md:space-x-8 ml-10">
               <Link href="/" className="px-3 py-2 text-xl rounded-full hover:bg-green-600 hover:bg-opacity-20 transition-all">
                 Home
@@ -52,7 +52,7 @@ const Navbar: React.FC = () => {
             </div>
           </div>
 
-          {/* Auth buttons - moved more to the right */}
+          {/*auth buttons moved more to the right */}
           <div className="hidden md:flex md:items-center md:space-x-4 ml-auto">
             <Link 
               href="/login" 
@@ -68,7 +68,7 @@ const Navbar: React.FC = () => {
             </Link>
           </div>
 
-          {/* Mobile menu button */}
+          {/*mobile menu button */}
           <div className="md:hidden flex items-center ml-auto">
             <button
               onClick={toggleMenu}
@@ -86,7 +86,7 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile menu, show/hide based on menu state */}
+      {/*mobile menu show/hide based on menu state */}
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-900">

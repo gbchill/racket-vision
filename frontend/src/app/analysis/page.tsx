@@ -14,7 +14,7 @@ const AnalysisPage = () => {
   const [activeTab, setActiveTab] = useState<'processed' | 'original'>('processed');
   const [isDownloading, setIsDownloading] = useState(false);
 
-  // For sample videos - in a real app, these would be loaded from a database
+  // For sample videos in a real app, these would be loaded from a database
   const getSampleVideoData = (id: string) => {
     const samples: Record<string, { processedUrl: string, originalUrl: string, title: string }> = {
       'sample1': {
@@ -22,13 +22,13 @@ const AnalysisPage = () => {
         originalUrl: '/samples/original-forehand.mp4',
         title: 'Professional Forehand Example'
       },
-      // Add more sample videos as needed
+      //add more sample videos as needed
     };
     
     return samples[id] || null;
   };
 
-  // Determine which video URLs to use (real upload or sample)
+  //determine which video URLs to use
   let currentProcessedUrl = processedVideoUrl;
   let currentOriginalUrl = originalVideoUrl;
   let analysisTitle = 'Your Tennis Swing Analysis';
@@ -42,23 +42,23 @@ const AnalysisPage = () => {
     }
   }
 
-  // Handle video download
+  //handle video download
   const handleDownload = async (url: string | null, type: string) => {
     if (!url) return;
     
     try {
       setIsDownloading(true);
       
-      // Fetch the video
+      //fetch the video
       const response = await fetch(url);
       const blob = await response.blob();
       
-      // Create a download link
+      //create a download link
       const downloadLink = document.createElement('a');
       downloadLink.href = URL.createObjectURL(blob);
       downloadLink.download = `racketvision-${type}-${Date.now()}.mp4`;
       
-      // Trigger download
+      //trigger download
       document.body.appendChild(downloadLink);
       downloadLink.click();
       document.body.removeChild(downloadLink);
@@ -71,7 +71,7 @@ const AnalysisPage = () => {
     }
   };
 
-  // Handle share
+  //handle share
   const handleShare = () => {
     if (navigator.share && currentProcessedUrl) {
       navigator.share({
@@ -81,7 +81,7 @@ const AnalysisPage = () => {
       })
       .catch(error => console.error('Error sharing:', error));
     } else {
-      // Fallback if Web Share API is not available
+      //fallback if Web Share API is not available
       navigator.clipboard.writeText(window.location.href)
         .then(() => alert('Link copied to clipboard!'))
         .catch(error => console.error('Error copying to clipboard:', error));

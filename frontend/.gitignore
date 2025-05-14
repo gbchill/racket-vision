@@ -11,6 +11,7 @@
 !.yarn/versions
 
 public/images 
+public/images
 
 # testing
 /coverage
