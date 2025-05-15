@@ -4,6 +4,7 @@ import numpy as np
 import tempfile
 import os
 import uuid
+import platform
 from pathlib import Path
 import logging
 
@@ -46,17 +47,26 @@ def process_video(video_path):
         
         logger.info(f"Video properties: {width}x{height} at {fps} fps, {frame_count} frames")
         
-        #create VideoWriter object use a different codec for Mac
-        #for mac use 'avc1' instead of 'mp4v'
-        if os.uname().sysname == 'Darwin':  #check if running on MacOS
+        # Use H264 codec for Windows which is more web-compatible
+        if platform.system() == 'Darwin':  # check if running on macOS
             fourcc = cv2.VideoWriter_fourcc(*'avc1')
         else:
-            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+            # For Windows, use H264 instead of mp4v
+            fourcc = cv2.VideoWriter_fourcc(*'H264')
+            # If H264 is not available, try these alternatives
+            # First try with avc1 which might work on some Windows installations
+            if not cv2.VideoWriter(output_path, fourcc, fps, (width, height)).isOpened():
+                logger.info("H264 codec not available, trying avc1")
+                fourcc = cv2.VideoWriter_fourcc(*'avc1')
+                
+                # If avc1 also fails, fall back to mp4v with an FFMPEG conversion later
+                if not cv2.VideoWriter(output_path, fourcc, fps, (width, height)).isOpened():
+                    logger.info("avc1 codec not available, falling back to mp4v")
+                    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
             
         out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
         
         #initialize mediapipe pose with specific configuration
-        #image dimensions
         with mp_pose.Pose(
             static_image_mode=False,
             model_complexity=1,  # 0=Lite, 1=Full, 2=Heavy
@@ -72,7 +82,6 @@ def process_video(video_path):
                     break
                 
                 #image to rgb and process it with mediaPipe
-                #image dimensions are explicitly passed
                 image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 
                 #image for processing
