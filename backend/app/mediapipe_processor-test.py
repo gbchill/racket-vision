@@ -208,24 +208,46 @@ def process_video(video_path):
                 pass
         raise
 
-# Test the processor if run directly
-if __name__ == "__main__":
-    # Test with a sample video
-    test_video = "test_video.mp4"  # Replace with your test video path
-    if os.path.exists(test_video):
-        try:
-            output = process_video(test_video)
-            print(f"Success! Output saved to: {output}")
-            
-            # Verify the output
-            valid, msg = verify_video(output)
-            print(f"Verification: {msg}")
-        except Exception as e:
-            print(f"Error: {e}")
-    else:
-        print(f"Test video not found: {test_video}")
+def test_with_specific_video():
+    """
+    Test function that processes tennis-forehand-1.mp4 and saves it to tennis-videos-processed
+    """
+    # Get the current script directory and navigate to the project root
+    current_dir = Path(__file__).parent
+    project_root = current_dir.parent  # This should be the backend folder
+    
+    # Define input and output paths
+    input_video = project_root / "tennis-videos" / "tennis-forehand-1.mp4"
+    output_dir = project_root / "tennis-videos-processed"
+    output_video = output_dir / "tennis-forehand-1-processed.mp4"
+    
+    # Create output directory if it doesn't exist
+    output_dir.mkdir(exist_ok=True)
+    
+    if not input_video.exists():
+        print(f"❌ Input video not found: {input_video}")
+        return
+    
+    try:
+        print(f"🎾 Processing tennis video: {input_video}")
+        print(f"📁 Output will be saved to: {output_video}")
+        
+        # Process the video
+        temp_output = process_video(str(input_video))
+        
+        # Move the temporary file to the desired location
+        import shutil
+        shutil.move(temp_output, str(output_video))
+        
+        print(f"✅ Success! Processed video saved to: {output_video}")
+        
+        # Verify the output
+        valid, msg = verify_video(str(output_video))
+        print(f"🔍 Verification: {msg}")
+        
+    except Exception as e:
+        print(f"❌ Error: {e}")
 
-# Additional helper function for testing processed videos
 def verify_video(video_path):
     """
     Verify that a video file is valid and can be played
@@ -251,3 +273,7 @@ def verify_video(video_path):
         
     except Exception as e:
         return False, f"Error: {str(e)}"
+
+# Test the processor if run directly
+if __name__ == "__main__":
+    test_with_specific_video()
