@@ -10,6 +10,8 @@ env/
 .venv/
 *.venv/
 
+backend\tennis-videos-processed
+
 lib/
 libs/
 
