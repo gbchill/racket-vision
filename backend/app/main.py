@@ -6,7 +6,7 @@ import logging
 import traceback
 import tempfile
 
-from .mediapipe_processor import process_video
+from .mediapipe_processor import process_video  # Use the fixed processor
 from .video import save_upload_file, upload_to_supabase, cleanup_temp_files
 
 #set up logging
@@ -88,6 +88,21 @@ async def analyze_video(file: UploadFile = File(...)):
             processed_path = process_video(temp_path)
             temp_files.append(processed_path)
             logger.info(f"Processed video saved to: {processed_path}")
+            
+            # Verify the processed video
+            import cv2
+            cap = cv2.VideoCapture(processed_path)
+            if not cap.isOpened():
+                raise ValueError("Processed video cannot be opened")
+            
+            frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            cap.release()
+            
+            if frame_count == 0:
+                raise ValueError("Processed video has no frames")
+                
+            logger.info(f"Processed video verified: {frame_count} frames")
+            
         except Exception as e:
             logger.error(f"Error processing video: {str(e)}")
             logger.error(traceback.format_exc())
